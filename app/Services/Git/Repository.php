@@ -13,7 +13,7 @@ class Repository
         return $analysis->analyseCommit($this->currentCommit());
     }
 
-    public function currentCommit()
+    public function currentCommit(): Commit
     {
         return new Commit;
     }

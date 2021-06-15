@@ -9,6 +9,9 @@ use App\Services\Analysis\Result;
 
 class TotalFiles implements Analysis
 {
+    /**
+     * @return Result
+     */
     public function analyseCommit(Commit $commit)
     {
         return new Result();
