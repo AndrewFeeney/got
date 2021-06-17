@@ -3,6 +3,7 @@
 namespace App\Services\Analysis\Analyses;
 
 use App\Contracts\Analysis;
+use App\Contracts\AnalysisResult;
 use App\Contracts\Commit;
 use App\Services\Analysis\Metric;
 use App\Services\Analysis\Result;
@@ -14,7 +15,7 @@ class TotalFiles implements Analysis
     /**
      * @return Result
      */
-    public function analyseCommit(Commit $commit)
+    public function analyseCommit(Commit $commit): AnalysisResult
     {
         return (new Result())
             ->withMetric(new Metric(self::METRIC_TOTAL_FILES, 0));

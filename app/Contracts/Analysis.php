@@ -4,5 +4,5 @@ namespace App\Contracts;
 
 interface Analysis
 {
-    public function analyseCommit(Commit $commit);
+    public function analyseCommit(Commit $commit): AnalysisResult;
 }
