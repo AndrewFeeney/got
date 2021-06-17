@@ -31,4 +31,9 @@ class Repository
     {
         return new Commit;
     }
+
+    public function exists(): bool
+    {
+        return true;
+    }
 }

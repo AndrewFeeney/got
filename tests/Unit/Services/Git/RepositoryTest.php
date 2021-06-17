@@ -18,6 +18,14 @@ class RepositoryTest extends TestsTestCase
     }
 
     /** @test */
+    public function the_exists_method_returns_true_when_the_repository_exists()
+    {
+        $validRepository = (new Repository())->withPath($path = base_path('tests/fixtures/git/empty'));
+
+        $this->assertTrue($validRepository->exists());
+    }
+
+    /** @test */
     public function it_can_analyse_a_commit()
     {
         $repository = new Repository(base_path('tests/fixtures/git/empty'));
