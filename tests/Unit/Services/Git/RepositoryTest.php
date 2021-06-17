@@ -10,6 +10,14 @@ use Tests\TestCase as TestsTestCase;
 class RepositoryTest extends TestsTestCase
 {
     /** @test */
+    public function it_accepts_a_path_to_a_git_repository_on_disk()
+    {
+        $repository = (new Repository())->withPath($path = base_path('tests/fixtures/git/empty'));
+
+        $this->assertEquals($path, $repository->getPath());
+    }
+
+    /** @test */
     public function it_can_analyse_a_commit()
     {
         $repository = new Repository(base_path('tests/fixtures/git/empty'));
