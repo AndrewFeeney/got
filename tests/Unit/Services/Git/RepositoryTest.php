@@ -34,15 +34,10 @@ class RepositoryTest extends TestsTestCase
     }
 
     /** @test */
-    public function it_can_analyse_a_commit()
+    public function it_can_get_the_total_commits_for_an_empty_repository()
     {
-        $repository = new Repository(base_path('tests/fixtures/git/empty'));
+        $emptyRepository = (new Repository())->withPath(storage_path('app/tests/fixtures/git/does_not_exist'));
 
-        $analysis = new TotalFiles;
-
-        $result = $repository->analyse($analysis);
-
-        $this->assertInstanceOf(AnalysisResult::class, $result);
-        $this->assertEquals(0, $result->getMetric(TotalFiles::METRIC_TOTAL_FILES)->getValue());
+        $this->assertEquals(0, $emptyRepository->totalCommits());
     }
 }

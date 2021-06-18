@@ -36,4 +36,9 @@ class Repository
     {
         return is_dir($this->path . '/.git');
     }
+
+    public function totalCommits(): int
+    {
+        return 0;
+    }
 }
