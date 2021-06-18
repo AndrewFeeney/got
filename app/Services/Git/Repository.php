@@ -34,6 +34,6 @@ class Repository
 
     public function exists(): bool
     {
-        return true;
+        return is_dir($this->path . '/.git');
     }
 }
