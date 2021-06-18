@@ -36,7 +36,7 @@ class RepositoryTest extends TestsTestCase
     /** @test */
     public function it_can_get_the_total_commits_for_an_empty_repository()
     {
-        $emptyRepository = (new Repository())->withPath(storage_path('app/tests/fixtures/git/does_not_exist'));
+        $emptyRepository = (new Repository())->withPath(storage_path('app/tests/fixtures/git/empty'));
 
         $this->assertEquals(0, $emptyRepository->totalCommits());
     }
