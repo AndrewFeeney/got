@@ -41,11 +41,20 @@ class TestsCreateRepositories extends Command
     public function handle()
     {
         $this->createFreshDirectory();
+
+        // Non-existent repo
         $this->createFreshDirectory('does_not_exist');
+
+        // Empty repo
         $this->createFreshDirectory('empty');
         $this->initialiseGitRepository('empty');
+
+        // Single commit repo
+        $this->createFreshDirectory('single_commit');
         $this->initialiseGitRepository('single_commit');
         $this->writeTextToFile('<?php echo "hello world";', 'single_commit/hello_world.php');
+        $this->stageAll('single_commit');
+        $this->commit('single_commit', 'initial commit');
     }
 
     protected function createFreshDirectory($relativePath = null)
@@ -80,7 +89,7 @@ class TestsCreateRepositories extends Command
 
     protected function initialiseGitRepository($relativePath)
     {
-        $this->announceStep("Creating git repository at " . $this->commentedRelativePath($relativePath));
+        $this->announceStep("Initialising git repository at " . $this->commentedRelativePath($relativePath));
         shell_exec("cd " . $this->appStoragePath($relativePath) . " && git init");
         $this->announceDone();
     }
@@ -106,5 +115,24 @@ class TestsCreateRepositories extends Command
         Storage::delete($this->relativePath($relativePath));
         Storage::put($this->relativePath($relativePath), $text);
         $this->announceDone();
+    }
+
+    protected function stageAll($repo)
+    {
+        $this->announceStep("Commiting to " . $this->commentedRelativePath($repo) . " repository");
+        $this->gitCommand($repo, "add -A");
+        $this->announceDone();
+    }
+
+    protected function commit($repo, $message)
+    {
+        $this->announceStep("Commiting to " . $this->commentedRelativePath($repo) . " repository");
+        $this->gitCommand($repo, "commit -m \"$message\"");
+        $this->announceDone();
+    }
+
+    protected function gitCommand($repo, $command)
+    {
+        shell_exec("cd " . $this->appStoragePath($repo) . " && git " . $command);
     }
 }

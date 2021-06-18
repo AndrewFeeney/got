@@ -40,4 +40,12 @@ class RepositoryTest extends TestsTestCase
 
         $this->assertEquals(0, $emptyRepository->totalCommits());
     }
+
+    /** @test */
+    public function it_can_get_the_total_commits_for_a_repository_with_a_single_commit()
+    {
+        $emptyRepository = (new Repository())->withPath(storage_path('app/tests/fixtures/git/single_commit'));
+
+        $this->assertEquals(1, $emptyRepository->totalCommits());
+    }
 }

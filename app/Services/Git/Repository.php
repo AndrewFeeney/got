@@ -39,6 +39,6 @@ class Repository
 
     public function totalCommits(): int
     {
-        return 0;
+        return (int) trim(shell_exec("cd $this->path && git log --oneline --all | wc -l"));
     }
 }
