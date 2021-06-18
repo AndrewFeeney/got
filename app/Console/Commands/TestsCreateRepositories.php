@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\Storage;
 
 class TestsCreateRepositories extends Command
 {
+    const STORAGE_SUBDIRECTORY = "tests/fixtures/git";
+
     /**
      * The name and signature of the console command.
      *
@@ -38,29 +40,31 @@ class TestsCreateRepositories extends Command
      */
     public function handle()
     {
-        $this->createFreshDirectory('tests/fixtures/git');
-        $this->createFreshDirectory('tests/fixtures/git/does_not_exist');
-        $this->createFreshDirectory('tests/fixtures/git/empty');
-        $this->initialiseGitRepository('tests/fixtures/git/empty');
+        $this->createFreshDirectory();
+        $this->createFreshDirectory('does_not_exist');
+        $this->createFreshDirectory('empty');
+        $this->initialiseGitRepository('empty');
+        $this->initialiseGitRepository('single_commit');
+        $this->writeTextToFile('<?php echo "hello world";', 'single_commit/hello_world.php');
     }
 
-    protected function createFreshDirectory($path)
+    protected function createFreshDirectory($relativePath = null)
     {
-        $this->deleteExistingDirectory($path);
-        $this->createDirectory($path);
+        $this->deleteExistingDirectory($relativePath);
+        $this->createDirectory($relativePath);
     }
 
-    protected function createDirectory($path)
+    protected function createDirectory($relativePath)
     {
-        $this->announceStep("Creating <comment>storage/app/$path</comment> directory");
-        Storage::makeDirectory($path);
+        $this->announceStep("Creating new " . $this->commentedRelativePath($relativePath) . " directory");
+        Storage::makeDirectory($this->relativePath($relativePath));
         $this->announceDone();
     }
 
-    protected function deleteExistingDirectory($path)
+    protected function deleteExistingDirectory($relativePath)
     {
-        $this->announceStep("Deleting existing <comment>storage/app/$path</comment> directory");
-        Storage::deleteDirectory($path);
+        $this->announceStep("Deleting existing " . $this->commentedRelativePath($relativePath) . " directory");
+        Storage::deleteDirectory($this->relativePath($relativePath));
         $this->announceDone();
     }
 
@@ -74,10 +78,33 @@ class TestsCreateRepositories extends Command
         $this->info('    ✅ Done');
     }
 
-    protected function initialiseGitRepository($path)
+    protected function initialiseGitRepository($relativePath)
     {
-        $this->announceStep("Creating git repository at <comment>storage/app/$path</comment>");
-        shell_exec("cd " . storage_path("app/$path") . " && git init");
-        $this->announceDone('');
+        $this->announceStep("Creating git repository at " . $this->commentedRelativePath($relativePath));
+        shell_exec("cd " . $this->appStoragePath($relativePath) . " && git init");
+        $this->announceDone();
+    }
+
+    protected function appStoragePath($relativePath)
+    {
+        return storage_path("app/" . $this->relativePath($relativePath));
+    }
+
+    protected function relativePath($relativePath)
+    {
+        return self::STORAGE_SUBDIRECTORY . "/$relativePath";
+    }
+
+    protected function commentedRelativePath($relativePath)
+    {
+        return "<comment>storage/app/" . $this->relativePath($relativePath) . "</comment>";
+    }
+
+    protected function writeTextToFile($text, $relativePath)
+    {
+        $this->announceStep("Writing " . $this->commentedRelativePath($relativePath));
+        Storage::delete($this->relativePath($relativePath));
+        Storage::put($this->relativePath($relativePath), $text);
+        $this->announceDone();
     }
 }
